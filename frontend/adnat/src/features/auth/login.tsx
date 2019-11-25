@@ -32,45 +32,40 @@ export default function Login () {
 
     const handleLoginClick = () => {
         
-        console.log(validateLogin());
-
-        try {
-            axios.post('http://localhost:3000/auth/login', {
-                email: "josh@gmail.com",
-                password: "12345678"
-            })
-                .then((response) => {
-                    console.log(response);
-                    if (response.status === 200) {
-                        console.log(response.data);
-                    }
-                });
-
-        } catch (ex) {
-            console.log(ex);
+        if (!validateLogin()) {
+            try {
+                axios.post('http://localhost:3000/auth/login', userLogin)
+                    .then((response: AxiosResponse)=> {
+                        console.log(response);
+                        if (response.status === 200) {
+                            console.log(response.data);
+                        }
+                    });
+    
+            } catch (ex) {
+                console.log(ex);
+            }
+            
         }
+
         
     }
 
     const validateLogin = () => {
-        const validationResults = Validation([userLogin.email, userLogin.password], ['email', 'password']);
+        const validationResults = Validation({email: userLogin.email, password: userLogin.password}, ['email', 'password']);
         const errors = validationResults.errors;
         
         const updatedHelperText = produce(helperText, draftHelperText => {
-            if (errors["email"]) {
                 draftHelperText.email = errors["email"][0];
-            }
-            if (errors["password"]) {
                 draftHelperText.password = errors["password"][0];
-            }
         });
         const updatedInputErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
-            if (errors["email"]) {
+            if (errors.email !== "") {
                 draftInputErrorFlags.email = true;
-            }
-            if (errors["password"]) {
+            } else draftInputErrorFlags.email = false;
+            if (errors.password !== "") {
                 draftInputErrorFlags.password = true;
-            }
+            } else draftInputErrorFlags.password = false;
         })
         setHelperText(updatedHelperText);
         setInputErrorFlags(updatedInputErrorFlags);
@@ -84,18 +79,17 @@ export default function Login () {
 
     const updateUser = (property: string, value: string) => {
 
-        const updatedUser = produce(userLogin, draftUser => {
+        const updatedUser = produce(userLogin, draftUserLogin => {
             switch (property) {
                 case "email":
-                    draftUser.email = value;
+                    draftUserLogin.email = value;
                     break;
                 case "password":
-                    draftUser.password = value;
+                    draftUserLogin.password = value;
                     break;
             }
 
-        })
-
+        });
         setUserLogin(updatedUser);
     }
 
@@ -108,7 +102,7 @@ export default function Login () {
                 <TextField
                     style={{marginTop: 80}}
                     label="Email"
-                    onChange={(event) => updateUser("email", event.target.value)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateUser("email", event.target.value)}
                     value={userLogin.email}
                     helperText={helperText.email}
                     error={inputErrorFlags.email}
@@ -116,7 +110,7 @@ export default function Login () {
                 <TextField
                     style={{marginTop: 20}}
                     label="Password"
-                    onChange={(event) => updateUser("password", event.target.value)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateUser("password", event.target.value)}
                     value={userLogin.password}
                     helperText={helperText.password}
                     error={inputErrorFlags.password}
@@ -132,7 +126,7 @@ export default function Login () {
                     }
                     label="Remember Me"
                 />
-                <Button style={{margin: "20px auto 0px auto", width: "25%"}} variant="contained" onClick={handleLoginClick}>Log In</Button>
+                <Button style={{margin: "40px auto 0px auto", width: "25%"}} variant="contained" onClick={handleLoginClick}>Log In</Button>
 
                 <Link style={{marginTop: 20}} href='/signup' variant='subtitle2'>Sign up</Link>
                 <Link href='/password' variant='body2'>Forgot Password?</Link>

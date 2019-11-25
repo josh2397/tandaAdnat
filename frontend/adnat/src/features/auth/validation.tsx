@@ -1,7 +1,21 @@
 import React from 'react';
 import validate from 'validate.js';
 
-export default function Validation (values: string[], rules: string[]) {
+interface inputValidationTypes {
+    name?: string;
+    email?: string;
+    password?: string;
+    passwordConfirmation?: string;
+}
+
+export default function Validation (values: inputValidationTypes, rules: string[]) {
+    const nameContraints = {
+        name : {
+            presence: true,
+            type: "string" 
+        }
+    }
+
     const emailContraints = {
         email: {
             presence: true,
@@ -11,7 +25,7 @@ export default function Validation (values: string[], rules: string[]) {
         }  
     };
 
-    const passwordContrains = {
+    const passwordContraints = {
         password: {
             presence: true,
             length: {
@@ -21,40 +35,46 @@ export default function Validation (values: string[], rules: string[]) {
         }
     };
 
-    const confirmPasswordContraints = {
+    const passwordConfirmationContraints = {
         confirmPassword: {
             presence: true,
-            equality: "password",
-            format: {
-                message: "Passwords must match"
-            }
+            equality: "password"
         }
     }
 
     let errorOccured = false;
 
-    const errors =  rules.map((rule, i) => {
-        console.log(rule, i);
-        console.log(values[i]);
+    const errors = rules.map((rule) => {
         let result;
         switch (rule) {
+
+            case "name":
+                errorOccured = true;
+                result = validate({name: values["name"]}, nameContraints)
+                if (!result) {
+                    return {name: ""}
+                } else return result;
             
             case "email":
                 errorOccured = true;
-                result = validate({email: values[i]}, emailContraints);
+                result = validate({email: values["email"]}, emailContraints);
                 if (!result) {
                     return {email: ""}
                 } else return result;
 
             case "password":
                 errorOccured = true;
-                result = validate({password: values[i]}, passwordContrains);
+                result = validate({password: values["password"]}, passwordContraints);
                 if (!result) {
                     return {password: ""}
                 } else return result;
 
-            // case "confirmPassword":
-            //     return validate({confirmPassword: values[i]}, confirmPasswordContraints)
+            case "passwordConfirmation":
+                errorOccured = true;
+                result = validate({password: values["password"], confirmPassword: values["passwordConfirmation"]}, passwordConfirmationContraints);
+                if (!result) {
+                    return {confirmPassword: ""}
+                } else return result;
         }
     }).reduce((error, current) => {
         console.log(error, current);
@@ -65,7 +85,6 @@ export default function Validation (values: string[], rules: string[]) {
         });
         return error;
 
-        
     }, {});
 
     return {errors: errors, errorOccured: errorOccured};
