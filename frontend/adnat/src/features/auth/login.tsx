@@ -5,7 +5,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import produce from 'immer';
 import { userLoginDTO } from '../../models/users';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Validation from './validation';
 
 export default function Login () {
@@ -34,8 +34,21 @@ export default function Login () {
         
         console.log(validateLogin());
 
-        
-        // const response = axios.post('localhost:3000/auth/login', userLogin);
+        try {
+            axios.post('http://localhost:3000/auth/login', {
+                email: "josh@gmail.com",
+                password: "12345678"
+            })
+                .then((response) => {
+                    console.log(response);
+                    if (response.status === 200) {
+                        console.log(response.data);
+                    }
+                });
+
+        } catch (ex) {
+            console.log(ex);
+        }
         
     }
 

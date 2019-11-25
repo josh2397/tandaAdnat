@@ -4,13 +4,24 @@ const authRouter = require("./router/auth");
 const organisationsRouter = require("./router/organisations");
 const shiftsRouter = require("./router/shifts");
 const usersRouter = require("./router/users");
+const cors = require('cors');
 const app = express();
 
 app.use(bodyParser.json());
+var corsOptions = {
+  origin: 'http://localhost:3001',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
+};
+app.use(cors(corsOptions));
 app.use("/auth", authRouter);
 app.use("/organisations", organisationsRouter);
 app.use("/shifts", shiftsRouter);
 app.use("/users", usersRouter);
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");

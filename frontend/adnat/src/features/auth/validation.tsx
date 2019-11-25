@@ -68,11 +68,5 @@ export default function Validation (values: string[], rules: string[]) {
         
     }, {});
 
-    // const error = Object.assign({}, ...errorArray.map(object => ({})))
-
-
-
     return {errors: errors, errorOccured: errorOccured};
-
-
 }

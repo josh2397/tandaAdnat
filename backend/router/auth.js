@@ -1,6 +1,7 @@
 const uuidv4 = require("uuid/v4");
 const express = require("express");
 const router = express.Router();
+const cors = require ('cors')
 const DB = require("../db");
 const { comparePassword, hashPassword } = require("../util/password");
 const { sessionMiddleware } = require("../util/session");
