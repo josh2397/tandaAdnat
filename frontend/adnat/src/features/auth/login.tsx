@@ -6,6 +6,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import produce from 'immer';
 import { userLoginDTO } from '../../models/users';
 import axios from 'axios';
+import Validation from './validation';
 
 export default function Login () {
 
@@ -15,13 +16,53 @@ export default function Login () {
         password: ""
     });
 
+    const [helperText, setHelperText] = useState<userLoginDTO>({
+        email: "",
+        password: ""
+    });
+
+    const [inputErrorFlags, setInputErrorFlags] = useState({
+        email: false,
+        password: false
+    });
+
     useEffect(() => {
         console.log("remember:", remember);
     }, [remember])
 
     const handleLoginClick = () => {
-        const response = axios.post('localhost:3000/auth/login', userLogin);
-        console.log(response); 
+        
+        console.log(validateLogin());
+
+        
+        // const response = axios.post('localhost:3000/auth/login', userLogin);
+        
+    }
+
+    const validateLogin = () => {
+        const validationResults = Validation([userLogin.email, userLogin.password], ['email', 'password']);
+        const errors = validationResults.errors;
+        
+        const updatedHelperText = produce(helperText, draftHelperText => {
+            if (errors["email"]) {
+                draftHelperText.email = errors["email"][0];
+            }
+            if (errors["password"]) {
+                draftHelperText.password = errors["password"][0];
+            }
+        });
+        const updatedInputErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
+            if (errors["email"]) {
+                draftInputErrorFlags.email = true;
+            }
+            if (errors["password"]) {
+                draftInputErrorFlags.password = true;
+            }
+        })
+        setHelperText(updatedHelperText);
+        setInputErrorFlags(updatedInputErrorFlags);
+
+        return validationResults.errorOccured;
     }
 
     const handleRemeberChange = () => ( event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,13 +97,16 @@ export default function Login () {
                     label="Email"
                     onChange={(event) => updateUser("email", event.target.value)}
                     value={userLogin.email}
+                    helperText={helperText.email}
+                    error={inputErrorFlags.email}
                 />
                 <TextField
                     style={{marginTop: 20}}
                     label="Password"
                     onChange={(event) => updateUser("password", event.target.value)}
                     value={userLogin.password}
-                    
+                    helperText={helperText.password}
+                    error={inputErrorFlags.password}
                 />
                 <FormControlLabel
                     style={{marginTop: 20}}
