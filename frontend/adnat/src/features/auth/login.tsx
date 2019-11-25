@@ -1,49 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import PageLayout from '../layout/pageLayout'
+import PageLayout from '../../layout/pageLayout'
 import { Typography, TextField, FormControl, FormControlLabel, Button, Link } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
-// import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import produce from 'immer';
-
-interface userLoginDTO {
-    email: string;
-    password: string;
-}
+import { userLoginDTO } from '../../models/users';
+import axios from 'axios';
 
 export default function Login () {
 
     const [remember, setRemember] = useState(false);
-    const [user, setUser] = useState<userLoginDTO>({email: "", password: ""});
+    const [userLogin, setUserLogin] = useState<userLoginDTO>({
+        email: "",
+        password: ""
+    });
 
     useEffect(() => {
         console.log("remember:", remember);
     }, [remember])
 
     const handleLoginClick = () => {
-        
+        const response = axios.post('localhost:3000/auth/login', userLogin);
+        console.log(response); 
     }
 
     const handleRemeberChange = () => ( event: React.ChangeEvent<HTMLInputElement>) => {
         setRemember(event.target.checked);
     }
 
-    const updatedUser = produce(user, draftUser => {
-        draftUser.email = user.email;
-    })
-
     const updateUser = (property: string, value: string) => {
-        const newUser : userLoginDTO = user;
 
-        switch (property) {
-            case "email":
-                newUser.email = value;
-            case "password":
-                newUser.password = value;
-            break
-        }
+        const updatedUser = produce(userLogin, draftUser => {
+            switch (property) {
+                case "email":
+                    draftUser.email = value;
+                    break;
+                case "password":
+                    draftUser.password = value;
+                    break;
+            }
 
-        setUser(newUser);
+        })
+
+        setUserLogin(updatedUser);
     }
 
 
@@ -56,13 +55,13 @@ export default function Login () {
                     style={{marginTop: 80}}
                     label="Email"
                     onChange={(event) => updateUser("email", event.target.value)}
-                    value={user.email}
+                    value={userLogin.email}
                 />
                 <TextField
                     style={{marginTop: 20}}
                     label="Password"
                     onChange={(event) => updateUser("password", event.target.value)}
-                    value={user.password}
+                    value={userLogin.password}
                     
                 />
                 <FormControlLabel

@@ -1,6 +1,6 @@
 import React from 'react';
-import Login from './features/login';
-import Signup from './features/signup';
+import Login from './features/auth/login';
+import Signup from './features/auth/signup';
 import PageLayout from './layout/pageLayout';
 import TitleBar from './components/titleBar';
 import { ThemeProvider } from '@material-ui/styles';
