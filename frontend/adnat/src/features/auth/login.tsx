@@ -40,7 +40,7 @@ export default function Login () {
                         if (response.status === 200) {
                             if (remember) {
                                 console.log(`token=${response.data.sessionId}`);
-                                document.cookie = `token=${response.data.sessionId}`;
+                                document.cookie = `sessionId=${response.data.sessionId}`;
                                 console.log(document.cookie);
                             }
                         }

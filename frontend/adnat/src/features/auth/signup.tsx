@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, SyntheticEvent } from 'react';
 import PageLayout from '../../layout/pageLayout'
-import { FormControl, Button, TextField, Link } from '@material-ui/core';
+import { FormControl, Button, TextField, Link, Snackbar, SnackbarContent, makeStyles, Theme } from '@material-ui/core';
+import { SnackbarOrigin } from '@material-ui/core/Snackbar'
 import { userSignupDTO } from '../../models/users';
 import Validation from './validation';
 import axios from 'axios';
 import produce from 'immer';
+import { green } from '@material-ui/core/colors';
+import { RouteComponentProps } from 'react-router';
 
-export default function Signup () {
+const useStyles = makeStyles((theme: Theme) => ({
+    success: {
+      backgroundColor: green[600],
+    }
+}));
+
+export default function Signup (props: RouteComponentProps) {
+
+    const classes = useStyles();
 
     const [userSignup, setUserSignup] = useState<userSignupDTO>({
         name: "",
@@ -28,6 +39,16 @@ export default function Signup () {
         password: false,
         confirmPassword: false
     });
+
+    const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
+
+    const handleSuccessSnackBarClose = (event?: SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+    
+        setOpenSuccessSnackbar(false);
+    };
  
     const handleSignupClick = () => {
 
@@ -37,6 +58,10 @@ export default function Signup () {
                     .then((response) => {
                         if (response.status === 200) {
                             console.log(response.data);
+                            setOpenSuccessSnackbar(true);
+                            setTimeout(function() {
+                                props.history.push('/login');
+                            }, 3000);
                         }
                     })
 
@@ -148,6 +173,25 @@ export default function Signup () {
 
                 <Link style={{marginTop: 20}} href='/login' variant='subtitle2'>Log in</Link>
             </FormControl>
+            <Snackbar
+                style={{backgroundColor: "green[600]"}}
+                open={openSuccessSnackbar}
+                onClose={handleSuccessSnackBarClose}
+                autoHideDuration={2000}
+                message={
+                    <>
+                        <span>Successfully Signed Up</span><br/>
+                        <span>Returning to Login...</span>
+                    </>
+                }
+            >
+                <SnackbarContent
+                    className={classes.success}
+                    message={
+                        <span>Successfully Signed Up. Moving to login...</span>
+                    }
+                />
+            </Snackbar>
         </PageLayout>
     );
 };
