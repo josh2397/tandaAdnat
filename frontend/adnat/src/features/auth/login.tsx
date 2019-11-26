@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PageLayout from '../../layout/pageLayout'
-import { Typography, TextField, FormControl, FormControlLabel, Button, Link } from '@material-ui/core';
+import { TextField, FormControl, FormControlLabel, Button, Link } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import produce from 'immer';
 import { userLoginDTO } from '../../models/users';
 import axios, { AxiosResponse } from 'axios';
@@ -31,24 +30,27 @@ export default function Login () {
     }, [remember])
 
     const handleLoginClick = () => {
-        
+        //https://stackoverflow.com/questions/244882/what-is-the-best-way-to-implement-remember-me-for-a-website
         if (!validateLogin()) {
             try {
+                console.log("trying to log in");
                 axios.post('http://localhost:3000/auth/login', userLogin)
                     .then((response: AxiosResponse)=> {
                         console.log(response);
                         if (response.status === 200) {
-                            console.log(response.data);
+                            if (remember) {
+                                console.log(`token=${response.data.sessionId}`);
+                                document.cookie = `token=${response.data.sessionId}`;
+                                console.log(document.cookie);
+                            }
                         }
                     });
+                
     
             } catch (ex) {
                 console.log(ex);
             }
-            
         }
-
-        
     }
 
     const validateLogin = () => {
@@ -60,16 +62,16 @@ export default function Login () {
                 draftHelperText.password = errors["password"][0];
         });
         const updatedInputErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
-            if (errors.email !== "") {
+            if (errors["email"] !== "") {
                 draftInputErrorFlags.email = true;
             } else draftInputErrorFlags.email = false;
-            if (errors.password !== "") {
+            if (errors["password"] !== "") {
                 draftInputErrorFlags.password = true;
             } else draftInputErrorFlags.password = false;
         })
         setHelperText(updatedHelperText);
         setInputErrorFlags(updatedInputErrorFlags);
-
+        console.log(validationResults.errorOccured);
         return validationResults.errorOccured;
     }
 
@@ -92,9 +94,6 @@ export default function Login () {
         });
         setUserLogin(updatedUser);
     }
-
-
-
 
     return (
         <PageLayout title="Login">

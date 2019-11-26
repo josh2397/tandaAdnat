@@ -49,32 +49,40 @@ export default function Validation (values: inputValidationTypes, rules: string[
         switch (rule) {
 
             case "name":
-                errorOccured = true;
                 result = validate({name: values["name"]}, nameContraints)
                 if (!result) {
                     return {name: ""}
-                } else return result;
+                } else {
+                    errorOccured = true;
+                    return result;
+                }
             
             case "email":
-                errorOccured = true;
                 result = validate({email: values["email"]}, emailContraints);
                 if (!result) {
                     return {email: ""}
-                } else return result;
+                } else {
+                    errorOccured = true;
+                    return result;
+                }
 
             case "password":
-                errorOccured = true;
                 result = validate({password: values["password"]}, passwordContraints);
                 if (!result) {
                     return {password: ""}
-                } else return result;
+                } else {
+                    errorOccured = true;
+                    return result;
+                }
 
             case "passwordConfirmation":
-                errorOccured = true;
                 result = validate({password: values["password"], confirmPassword: values["passwordConfirmation"]}, passwordConfirmationContraints);
                 if (!result) {
                     return {confirmPassword: ""}
-                } else return result;
+                } else {
+                    errorOccured = true;
+                    return result;
+                }
         }
     }).reduce((error, current) => {
         console.log(error, current);
