@@ -26,7 +26,7 @@ export default function Signup () {
         name: false,
         email: false,
         password: false,
-        passwordConfirmation: false
+        confirmPassword: false
     });
  
     const handleSignupClick = () => {
@@ -48,14 +48,14 @@ export default function Signup () {
     }
 
     const validateSignup = () => {
-        const validationResults = Validation({name: userSignup.name, email: userSignup.email, password: userSignup.password, passwordConfirmation: userSignup.passwordConfirmation}, ["name", "email", "password", "passwordConfirmation"]);
+        const validationResults = Validation({name: userSignup.name, email: userSignup.email, password: userSignup.password, confirmPassword: userSignup.passwordConfirmation}, ["name", "email", "password", "confirmPassword"]);
         const errors = validationResults.errors;
 
         const updatedHelperText = produce(helperText, draftHelperText => {
-            draftHelperText.name = errors["name"][0];
-            draftHelperText.email = errors["email"][0];
-            draftHelperText.password = errors["password"][0];
-            draftHelperText.passwordConfirmation = errors["confirmPassword"][0];
+            draftHelperText.name = errors["name"];
+            draftHelperText.email = errors["email"];
+            draftHelperText.password = errors["password"];
+            draftHelperText.passwordConfirmation = errors["confirmPassword"];
         });
 
         const updatedInputerErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
@@ -71,10 +71,13 @@ export default function Signup () {
                 draftInputErrorFlags.password = true;
             } else draftInputErrorFlags.password = false;
 
-            if (errors.passwordConfirmation !== "") {
-                draftInputErrorFlags.passwordConfirmation = true;
-            } else draftInputErrorFlags.passwordConfirmation = false;
+            if (errors.confirmPassword !== "") {
+                draftInputErrorFlags.confirmPassword = true;
+            } else draftInputErrorFlags.confirmPassword = false;
         });
+
+        console.log(updatedInputerErrorFlags);
+        console.log(errors, updatedHelperText);
 
         setHelperText(updatedHelperText);
         setInputErrorFlags(updatedInputerErrorFlags);
@@ -95,7 +98,7 @@ export default function Signup () {
                 case "password":
                     draftUserSignup.password = value;
                     break;
-                case "passwordConfirmation":
+                case "confirmPassword":
                     draftUserSignup.passwordConfirmation = value;
                     break;
             }
@@ -135,10 +138,10 @@ export default function Signup () {
                 <TextField
                     style={{marginTop: 20}}
                     label="Confirm Password"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateUser("passwordConfirmation", event.target.value)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateUser("confirmPassword", event.target.value)}
                     value={userSignup.passwordConfirmation}
                     helperText={helperText.passwordConfirmation}
-                    error={inputErrorFlags.passwordConfirmation}
+                    error={inputErrorFlags.confirmPassword}
                 />
 
                 <Button style={{margin: "40px auto 0px auto", width: "25%"}} variant="contained" onClick={handleSignupClick}>Signup</Button>

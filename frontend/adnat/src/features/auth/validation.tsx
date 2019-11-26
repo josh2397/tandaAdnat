@@ -5,7 +5,7 @@ interface inputValidationTypes {
     name?: string;
     email?: string;
     password?: string;
-    passwordConfirmation?: string;
+    confirmPassword?: string;
 }
 
 export default function Validation (values: inputValidationTypes, rules: string[]) {
@@ -35,7 +35,7 @@ export default function Validation (values: inputValidationTypes, rules: string[
         }
     };
 
-    const passwordConfirmationContraints = {
+    const confirmPasswordContraints = {
         confirmPassword: {
             presence: true,
             equality: "password"
@@ -75,8 +75,8 @@ export default function Validation (values: inputValidationTypes, rules: string[
                     return result;
                 }
 
-            case "passwordConfirmation":
-                result = validate({password: values["password"], confirmPassword: values["passwordConfirmation"]}, passwordConfirmationContraints);
+            case "confirmPassword":
+                result = validate({password: values["password"], confirmPassword: values["confirmPassword"]}, confirmPasswordContraints);
                 if (!result) {
                     return {confirmPassword: ""}
                 } else {
@@ -85,10 +85,8 @@ export default function Validation (values: inputValidationTypes, rules: string[
                 }
         }
     }).reduce((error, current) => {
-        console.log(error, current);
         
         Object.entries(current).forEach(([k, v]) => {
-            console.log(k, v);
             error[k] = v;
         });
         return error;
