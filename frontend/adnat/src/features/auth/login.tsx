@@ -6,8 +6,9 @@ import produce from 'immer';
 import { userLoginDTO } from '../../models/users';
 import axios, { AxiosResponse } from 'axios';
 import Validation from './validation';
+import { RouteComponentProps } from 'react-router-dom';
 
-export default function Login () {
+export default function Login (props: RouteComponentProps) {
 
     const [remember, setRemember] = useState(false);
     const [userLogin, setUserLogin] = useState<userLoginDTO>({
@@ -42,6 +43,13 @@ export default function Login () {
                                 console.log(`token=${response.data.sessionId}`);
                                 document.cookie = `sessionId=${response.data.sessionId}`;
                                 console.log(document.cookie);
+                                
+                                props.history.push('/organisation');
+                            } else {
+                                props.history.push({
+                                    pathname: "/organisation",
+                                    state: { sessionId: response.data.sessionId }
+                                });
                             }
                         }
                     });

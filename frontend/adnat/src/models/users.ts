@@ -9,3 +9,10 @@ export interface userSignupDTO {
     password: string;
     passwordConfirmation: string;
 }
+
+export interface userDetails {
+    id: number;
+    organisationId: number;
+    name: string;
+    email: string;
+}

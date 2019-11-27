@@ -1,6 +1,7 @@
 import React from 'react';
 import Login from './features/auth/login';
 import Signup from './features/auth/signup';
+import OrganisationsIndex from './features/organisations/organisationsIndex';
 import PageLayout from './layout/pageLayout';
 import TitleBar from './components/titleBar';
 import { ThemeProvider } from '@material-ui/styles';
@@ -30,8 +31,7 @@ const App: React.FC = () => {
           <Route exact={true} component={Login} path="/"/>
           <Route component={Login} path="/login"/>
           <Route component={Signup} path="/signup"/>
-          <Route/>
-
+          <Route component={OrganisationsIndex} path="/organisation"/>
         </Switch>
 
       </Router>
