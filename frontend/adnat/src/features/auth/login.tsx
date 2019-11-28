@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import AuthContext from '../../components/authContext';
 import PageLayout from '../../layout/pageLayout'
 import { TextField, FormControl, FormControlLabel, Button, Link } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -9,6 +10,9 @@ import Validation from './validation';
 import { RouteComponentProps } from 'react-router-dom';
 
 export default function Login (props: RouteComponentProps) {
+
+    const authAPI = useContext(AuthContext);
+    const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () =>{console.log("toggleAuthenticated is undefined")};
 
     const [remember, setRemember] = useState(false);
     const [userLogin, setUserLogin] = useState<userLoginDTO>({
@@ -39,6 +43,10 @@ export default function Login (props: RouteComponentProps) {
                     .then((response: AxiosResponse)=> {
                         console.log(response);
                         if (response.status === 200) {
+
+                            updateAuthentication(true);
+                            console.log("Printing Authenticated after successful login: ", authAPI.authenticated);
+
                             if (remember) {
                                 console.log(`token=${response.data.sessionId}`);
                                 document.cookie = `sessionId=${response.data.sessionId}`;
@@ -51,6 +59,7 @@ export default function Login (props: RouteComponentProps) {
                                     state: { sessionId: response.data.sessionId }
                                 });
                             }
+
                         }
                     });
                 
@@ -66,8 +75,8 @@ export default function Login (props: RouteComponentProps) {
         const errors = validationResults.errors;
         
         const updatedHelperText = produce(helperText, draftHelperText => {
-                draftHelperText.email = errors["email"][0];
-                draftHelperText.password = errors["password"][0];
+                draftHelperText.email = errors["email"];
+                draftHelperText.password = errors["password"];
         });
         const updatedInputErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
             if (errors["email"] !== "") {

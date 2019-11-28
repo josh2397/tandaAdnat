@@ -1,21 +1,25 @@
-import React, { useState, useEffect, FunctionComponent } from 'react';
+import React, { useState, useEffect, FunctionComponent, useContext } from 'react';
 import PageLayout from '../../layout/pageLayout';
 import { Button, Typography, Link } from '@material-ui/core';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
 import { userDetails } from '../../models/users';
+import AuthContext from '../../components/authContext';
 import User from '../users/user';
-import { RouteComponentProps, Route, Switch } from 'react-router';
+import { RouteComponentProps, Route, Switch, Redirect } from 'react-router';
 import OrganisationCreateJoin from './organisationsOverview';
 import OrganisationsEdit from './organisationsEdit';
 import OrganisationsShifts from './organisationsShifts';
 import OrganisationsActions from './organisationsActions';
 
-interface loginProps {
-    sessionId: string;
-}
+
 
 const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, location, history, match}) => {
+
+    const authAPI = useContext(AuthContext);
+    const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () =>{console.log("toggleAuthenticated is undefined")};
+    
+    console.log("Printing Authenticated Through context: ", authAPI.authenticated);
     
     const [user, setUser] = useState<userDetails>({
         id: -1,
@@ -24,19 +28,27 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         email: ""
     });
 
+    useEffect(() => {
+        
+    }, [])
+
     const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
 
     const handleGetUser = async () => {
+        console.log(sessionId)
 
         let updatedUser: userDetails | undefined;
-        
-        if (location.state) {
-            updatedUser = await User.getUser(location.state.sessionId);
-        } else {
-            updatedUser = await User.getUser();
-        } 
-        if (updatedUser !== undefined) {
-            setUser(updatedUser);
+        try {
+            if (location.state) {
+                updatedUser = await User.getUser(location.state.sessionId);
+            } else {
+                updatedUser = await User.getUser();
+            } 
+            if (updatedUser !== undefined) {
+                setUser(updatedUser);
+            }
+        } catch (ex) {
+            console.log(ex)
         }
 
         
@@ -76,12 +88,21 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     }, [user])
 
     const handleLogout = async () => {
+
         const response: AxiosResponse<any> = await Axios.get('http://localhost:3000/auth/logout', {headers: {
             "Authorization": location.state.sessionId ? location.state.sessionId : Cookies.getCookieValue("sessionId"),
             "Content-Type": "application/json"
         }});
         location.state.sessionId = "";
         Cookies.deleteCookie("sessionId");
+        setUser({
+            id: -1,
+            organisationId: -1,
+            name: "",
+            email: ""
+        })
+        updateAuthentication(false);
+        console.log("Logged out, cookie: ", document.cookie);
 
     };
 
@@ -96,10 +117,11 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
                 <></>
             }
             <Switch>
-                <Route component={OrganisationCreateJoin} path='/organisation/createjoin'/>
-                <Route component={OrganisationsActions} path='/organisation/actions'/>
-                <Route component={OrganisationsEdit} path='/organisation/edit'/>
-                <Route component={OrganisationsShifts} path='/organisation/shifts'/>
+                <Route exact={true} component={OrganisationCreateJoin} path='/organisation/createjoin'/>
+                <Route exact={true} component={OrganisationsActions} path='/organisation/actions'/>
+                <Route exact={true} component={OrganisationsEdit} path='/organisation/edit'/>
+                <Route exact={true} component={OrganisationsShifts} path='/organisation/shifts'/>
+                <Route render={() => <Redirect to={{pathname: "/organisation"}} />} />
             </Switch>
             
         </PageLayout>

@@ -12,7 +12,10 @@ export default function Validation (values: inputValidationTypes, rules: string[
     const nameContraints = {
         name : {
             presence: true,
-            type: "string" 
+            type: "string",
+            length: {
+                minimum: 4
+            }
         }
     }
 
@@ -30,7 +33,6 @@ export default function Validation (values: inputValidationTypes, rules: string[
             presence: true,
             length: {
                 minimum: 8,
-                message: "must have a minimum length of 8 characters"
             }
         }
     };
@@ -44,45 +46,35 @@ export default function Validation (values: inputValidationTypes, rules: string[
 
     let errorOccured = false;
 
+    const resultWithEmpty = (result: any, emptyObject: object) => {
+        if (!result) {
+            return emptyObject;
+        } else {
+            errorOccured = true;
+            return result;
+        }
+    }
+
     const errors = rules.map((rule) => {
         let result;
         switch (rule) {
 
             case "name":
-                result = validate({name: values["name"]}, nameContraints)
-                if (!result) {
-                    return {name: ""}
-                } else {
-                    errorOccured = true;
-                    return result;
-                }
+                result = validate({name: values["name"]}, nameContraints);
+                return resultWithEmpty(result, {name: ""});
             
             case "email":
                 result = validate({email: values["email"]}, emailContraints);
-                if (!result) {
-                    return {email: ""}
-                } else {
-                    errorOccured = true;
-                    return result;
-                }
+                return resultWithEmpty(result, {email: ""});
 
             case "password":
                 result = validate({password: values["password"]}, passwordContraints);
-                if (!result) {
-                    return {password: ""}
-                } else {
-                    errorOccured = true;
-                    return result;
-                }
+                return resultWithEmpty(result, {password: ""});
+
 
             case "confirmPassword":
                 result = validate({password: values["password"], confirmPassword: values["confirmPassword"]}, confirmPasswordContraints);
-                if (!result) {
-                    return {confirmPassword: ""}
-                } else {
-                    errorOccured = true;
-                    return result;
-                }
+                return resultWithEmpty(result, {confirmPassword: ""});
         }
     }).reduce((error, current) => {
         
