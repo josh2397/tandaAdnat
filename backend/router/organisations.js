@@ -82,6 +82,28 @@ router.post("/create_join", (req, res) => {
     });
 });
 
+router.get("/:id", (req, res) => {
+  DB.get(
+    "SELECT organisations.* FROM organisations WHERE organisations.id = ?",
+    req.params.id
+  ).then((org) => {
+    if (!org) {
+      throw {
+        statusCode: 404,
+        error: "Organisation wasn't found"
+      };
+    } else {
+      res.json({ id: org.id, name: org.name, hourlyRate: org.hourlyRate });
+
+    }
+  }).catch(err => {
+    if (err && err.statusCode) {
+      return res.status(err.statusCode).json({error: err.error});
+    }
+    throw err;
+  });
+});
+
 router.post("/leave", (req, res) => {
   DB.run(
     "UPDATE users SET organisation_id = NULL WHERE id = ?",

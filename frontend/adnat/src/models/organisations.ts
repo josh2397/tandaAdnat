@@ -1,10 +1,16 @@
-export default interface createOrganisationDTO {
+export interface createOrganisationDTO {
     name: string;
     rate: number;
 }
 
-export default interface editOrganisationDTO {
+export interface editOrganisationDTO {
     id: string;
     name: string;
-    rate: number;
+    hourlyRate: number;
+}
+
+export interface organisationListDTO {
+    id: number;
+    name: string;
+    hourlyRate: number;
 }

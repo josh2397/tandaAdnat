@@ -1,4 +1,4 @@
-import React, { useState, createContext, useMemo, useCallback } from 'react';
+import React, { useState, createContext, useMemo, useCallback, useEffect } from 'react';
 import Login from './features/auth/login';
 import Signup from './features/auth/signup';
 import OrganisationsIndex from './features/organisations/organisationsIndex';
@@ -12,6 +12,7 @@ import {
   RouteComponentProps
 } from "react-router-dom";
 import { AuthProvider } from './components/authContext';
+import { IUserDetails } from './models/users';
 import PrivateRoute from './helpers/privateRoute';
 import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -24,12 +25,21 @@ const theme = createMuiTheme({
   }
 })
 
+
+
 const App: React.FC = () => {
   
   const [authenticated, setAuthenticated] = useState(false);
-  const updateAuthentication = useCallback((authenticationValue: boolean) => setAuthenticated(authenticationValue), []);
+  const [userDetails, setUserDetails] = useState({} as IUserDetails);
 
-  const api = useMemo(() => ({updateAuthentication, authenticated}), []);
+  const updateAuthentication = (authenticationValue: boolean) => setAuthenticated(authenticationValue);
+  const updateUserDetails = (updatedUserDetails: IUserDetails) => setUserDetails(updatedUserDetails);
+
+  useEffect(() => {
+    console.log("updated authenticated in app", authenticated);
+  }, [authenticated])
+
+  const api = {updateAuthentication, authenticated, updateUserDetails, userDetails}
 
   return (
     <AuthProvider value={api}>

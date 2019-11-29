@@ -16,3 +16,10 @@ export interface userDetails {
     name: string;
     email: string;
 }
+
+export interface IUserDetails {
+    id: number;
+    name: string;
+    organisationId: number;
+    organisationName: string;
+}

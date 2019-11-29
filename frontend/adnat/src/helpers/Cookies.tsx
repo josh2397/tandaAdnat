@@ -1,6 +1,3 @@
-import React from 'react';
-import { ReactComponent } from '*.svg';
-
 export default class Cookies {
 
     static getCookieValue (name: string) {
@@ -11,6 +8,6 @@ export default class Cookies {
     }
 
     static deleteCookie (name: string) {
-        document.cookie = `${name}= ;`
+        document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
     }
 };

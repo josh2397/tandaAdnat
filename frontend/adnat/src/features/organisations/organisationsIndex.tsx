@@ -3,8 +3,8 @@ import PageLayout from '../../layout/pageLayout';
 import { Button, Typography, Link } from '@material-ui/core';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
-import { userDetails } from '../../models/users';
-import AuthContext from '../../components/authContext';
+import { userDetails, IUserDetails } from '../../models/users';
+import AuthContext, {defaultUserDetails} from '../../components/authContext';
 import User from '../users/user';
 import { RouteComponentProps, Route, Switch, Redirect } from 'react-router';
 import OrganisationCreateJoin from './organisationsOverview';
@@ -17,8 +17,9 @@ import OrganisationsActions from './organisationsActions';
 const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, location, history, match}) => {
 
     const authAPI = useContext(AuthContext);
-    const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () =>{console.log("toggleAuthenticated is undefined")};
-    
+    const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () => {console.log("toggleAuthenticated is undefined")};
+    const updateUserDetails = authAPI.updateUserDetails ? authAPI.updateUserDetails : () => { console.log("updateUserDetails is undefined")};
+    const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
     console.log("Printing Authenticated Through context: ", authAPI.authenticated);
     
     const [user, setUser] = useState<userDetails>({
@@ -29,8 +30,10 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     });
 
     useEffect(() => {
-        
-    }, [])
+        // console.log("Authentication updated");
+        // console.log(document.cookie);
+        // console.log(authAPI.authenticated);
+    }, [authAPI.authenticated])
 
     const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
 
@@ -46,19 +49,24 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
             } 
             if (updatedUser !== undefined) {
                 setUser(updatedUser);
+                updateUserDetails({
+                    organisationId: updatedUser.organisationId, 
+                    name: updatedUser.name,
+                    id: updatedUser.id,
+                    organisationName: userDetails.organisationName
+                });
             }
         } catch (ex) {
             console.log(ex)
         }
-
-        
     } 
 
     const routeToOrganisation = () => {
         /* If the user hasn't joined an organisation get them to create or 
         * join one, otherwise allow them to select actions for that organisation
         */
-        if ((user.organisationId === -1) || (user.organisationId === null)) {
+       console.log(location.state);
+        if ((userDetails.organisationId === undefined) && (userDetails.organisationId === -1)) {
             pushRoute({sessionId: sessionId}, 'createjoin')
         } else {
             pushRoute({
@@ -84,25 +92,40 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     }, []);
 
     useEffect(() => {
-        routeToOrganisation();
-    }, [user])
+        console.log("userDetails have updated", userDetails);
+        if ((userDetails.organisationId !== undefined) && (userDetails.organisationId !== -1)) {
+            console.log("Organisation Id from index:", userDetails.organisationId);
+            
+            routeToOrganisation();
+        }
+        
+    }, [authAPI.userDetails])
 
     const handleLogout = async () => {
-
-        const response: AxiosResponse<any> = await Axios.get('http://localhost:3000/auth/logout', {headers: {
-            "Authorization": location.state.sessionId ? location.state.sessionId : Cookies.getCookieValue("sessionId"),
-            "Content-Type": "application/json"
-        }});
-        location.state.sessionId = "";
-        Cookies.deleteCookie("sessionId");
-        setUser({
-            id: -1,
-            organisationId: -1,
-            name: "",
-            email: ""
-        })
-        updateAuthentication(false);
-        console.log("Logged out, cookie: ", document.cookie);
+        console.log(Cookies.getCookieValue("sessionId"));
+        try {
+            const response: AxiosResponse<any> = await Axios.delete('http://localhost:3000/auth/logout', {headers: {
+                "Authorization": location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"),
+                "Content-Type": "application/json"
+            }});
+            if (response.status === 200) {
+                if (location.state) {
+                    location.state.sessionId = ""; 
+                }
+                Cookies.deleteCookie("sessionId");
+                setUser({
+                    id: -1,
+                    organisationId: -1,
+                    name: "",
+                    email: ""
+                })
+                updateAuthentication(false);
+                console.log("Logged out, cookie: ", document.cookie);
+    
+            }
+        } catch (ex) {
+            console.log(ex);
+        }
 
     };
 

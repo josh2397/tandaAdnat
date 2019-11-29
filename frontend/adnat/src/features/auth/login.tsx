@@ -8,6 +8,8 @@ import { userLoginDTO } from '../../models/users';
 import axios, { AxiosResponse } from 'axios';
 import Validation from './validation';
 import { RouteComponentProps } from 'react-router-dom';
+import Cookies from '../../helpers/Cookies';
+
 
 export default function Login (props: RouteComponentProps) {
 
@@ -31,7 +33,19 @@ export default function Login (props: RouteComponentProps) {
     });
 
     useEffect(() => {
+        const sessionId = Cookies.getCookieValue("sessionId");
+        console.log("Sessionid: ", sessionId);
+        if ((sessionId !== "") && (sessionId !== undefined)) {
+            console.log("sessionId is valid");
+            console.log("authenticated: ", authAPI.authenticated);
+            updateAuthentication(true);
+            props.history.push('/organisation');
+        }
+    }, [])
+
+    useEffect(() => {
         console.log("remember:", remember);
+        console.log("Cookie in login: ", document.cookie, "authenticated: ", authAPI.authenticated);
     }, [remember])
 
     const handleLoginClick = () => {
@@ -45,15 +59,16 @@ export default function Login (props: RouteComponentProps) {
                         if (response.status === 200) {
 
                             updateAuthentication(true);
-                            console.log("Printing Authenticated after successful login: ", authAPI.authenticated);
+                            // console.log("Printing Authenticated after successful login: ", authAPI.authenticated);
 
                             if (remember) {
                                 console.log(`token=${response.data.sessionId}`);
-                                document.cookie = `sessionId=${response.data.sessionId}`;
+                                document.cookie = `sessionId=${response.data.sessionId}; Path=/;`;
                                 console.log(document.cookie);
                                 
                                 props.history.push('/organisation');
                             } else {
+                                console.log("printing from false remember")
                                 props.history.push({
                                     pathname: "/organisation",
                                     state: { sessionId: response.data.sessionId }

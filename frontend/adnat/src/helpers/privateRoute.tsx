@@ -17,6 +17,7 @@ const PrivateRoute = ({ component: FunctionComponent, authenticated, ...rest }: 
                 authenticated ? (
                     <FunctionComponent {...props}/>
                 ) : (
+                    // console.log("Redirecting to login from private route due to unauthentication");
                     <Redirect to='/login'/>
                 )
             )}
