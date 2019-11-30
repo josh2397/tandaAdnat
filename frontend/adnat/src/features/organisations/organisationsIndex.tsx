@@ -21,6 +21,8 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     const updateUserDetails = authAPI.updateUserDetails ? authAPI.updateUserDetails : () => { console.log("updateUserDetails is undefined")};
     const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
     console.log("Printing Authenticated Through context: ", authAPI.authenticated);
+
+    const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));
     
     const [user, setUser] = useState<userDetails>({
         id: -1,
@@ -35,10 +37,11 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         // console.log(authAPI.authenticated);
     }, [authAPI.authenticated])
 
-    const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
+    // const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
+
 
     const handleGetUser = async () => {
-        console.log(sessionId)
+        console.log(sessionId, location.state);
 
         let updatedUser: userDetails | undefined;
         try {
@@ -65,7 +68,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         /* If the user hasn't joined an organisation get them to create or 
         * join one, otherwise allow them to select actions for that organisation
         */
-       console.log(location.state);
+       console.log(location.state, sessionId);
         if ((userDetails.organisationId === undefined) && (userDetails.organisationId === -1)) {
             pushRoute({sessionId: sessionId}, 'createjoin')
         } else {
@@ -77,7 +80,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     }
 
     const pushRoute = (state: object, path: string) => {
-        if (location.state) {
+        if (sessionId) {
             history.push({
                 pathname: `/organisation/${path}`,
                 state: state
@@ -93,6 +96,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
 
     useEffect(() => {
         console.log("userDetails have updated", userDetails);
+        console.log(location.state, sessionId);
         if ((userDetails.organisationId !== undefined) && (userDetails.organisationId !== -1)) {
             console.log("Organisation Id from index:", userDetails.organisationId);
             
