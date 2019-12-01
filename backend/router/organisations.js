@@ -93,7 +93,7 @@ router.get("/:id", (req, res) => {
         error: "Organisation wasn't found"
       };
     } else {
-      res.json({ id: org.id, name: org.name, hourlyRate: org.hourlyRate });
+      res.json({ id: org.id, name: org.name, hourlyRate: org.hourly_rate });
 
     }
   }).catch(err => {

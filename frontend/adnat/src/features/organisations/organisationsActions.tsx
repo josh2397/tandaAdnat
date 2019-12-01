@@ -47,7 +47,6 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
     
 
     useEffect(() => {
-        console.log("in actions");
         console.log("organisationId from actions:", userDetails.organisationId, location.state);
 
         handleGetOrganisation();

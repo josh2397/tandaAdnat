@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MTableBody } from 'material-table';
 import { TableCell, TextField, Button } from '@material-ui/core';
 import produce from 'immer';
@@ -21,15 +21,32 @@ export default function OrganisationAddShift(props: any) {
     })
 
     const tableInputFields = [
+        "date",
         "start",
         "finish",
         "break"
     ]
 
+    const updateDates = (date: Date, shiftTimes: Date[]) => {
+        const dd = date.getDate();
+        const mm = date.getMonth();
+        const yyyy = date.getFullYear();
+
+        for (let i = 0; i < shiftTimes.length; i++) {
+            shiftTimes[i].setDate(dd);
+            shiftTimes[i].setMonth(mm);
+            shiftTimes[i].setFullYear(yyyy);
+        }
+        return shiftTimes;
+    }
+
     const updateNewShift = (property: string, value: any) => {
         const updatedNewShift = produce(newShift, draftNewShift => {
             switch (property) {
                 case "date":
+                    const shiftDates = updateDates(value, [newShift.start, newShift.finish])
+                    draftNewShift.start = shiftDates[0];
+                    draftNewShift.finish = shiftDates[1];
                     draftNewShift.date = value;
                     break;
                 case "start":
@@ -104,11 +121,10 @@ export default function OrganisationAddShift(props: any) {
             </MuiPickersUtilsProvider>
             <TableCell>
                 <TextField
-                variant="outlined"
-                label={"Break Length"}
-                color="secondary"
-                value={newShift['breakLength']}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateNewShift('break', event.target.value)}
+                    label={"Break"}
+                    color="secondary"
+                    value={newShift['breakLength']}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateNewShift('break', event.target.value)}
                 
                 />
             </TableCell>

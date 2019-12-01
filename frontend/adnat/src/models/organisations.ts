@@ -18,11 +18,11 @@ export interface organisationListDTO {
 export interface organisationShift {
     id: number;
     userId: number;
-    name: string;
+    name?: string;
     date: string;
     start: string;
     finish: string;
-    break: number;
+    break?: number;
     worked: number;
     cost: number;
 }
