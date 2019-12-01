@@ -1,4 +1,3 @@
-import React from 'react';
 import validate from 'validate.js';
 
 interface inputValidationTypes {

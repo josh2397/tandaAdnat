@@ -1,10 +1,9 @@
 import React, { useState, SyntheticEvent } from 'react';
 import PageLayout from '../../layout/pageLayout'
 import { FormControl, Button, TextField, Link, Snackbar, SnackbarContent, makeStyles, Theme } from '@material-ui/core';
-import { SnackbarOrigin } from '@material-ui/core/Snackbar'
 import { userSignupDTO } from '../../models/users';
 import Validation from './validation';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import produce from 'immer';
 import { green } from '@material-ui/core/colors';
 import { RouteComponentProps } from 'react-router';
@@ -50,20 +49,20 @@ export default function Signup (props: RouteComponentProps) {
         setOpenSuccessSnackbar(false);
     };
  
-    const handleSignupClick = () => {
+    const handleSignupClick = async () => {
 
         if (!validateSignup()) {
             try {
-                axios.post('http://localhost:3000/auth/signup', userSignup)
-                    .then((response) => {
-                        if (response.status === 200) {
-                            console.log(response.data);
-                            setOpenSuccessSnackbar(true);
-                            setTimeout(function() {
-                                props.history.push('/login');
-                            }, 3000);
-                        }
-                    })
+                console.log(userSignup);
+                const response: AxiosResponse<any> = await axios.post('http://localhost:3000/auth/signup', userSignup)
+                
+                if (response.status === 200) {
+                    console.log(response.data);
+                    setOpenSuccessSnackbar(true);
+                    setTimeout(function() {
+                        props.history.push('/login');
+                    }, 3000);
+                }
 
             } catch (ex) {
                 console.log(ex);

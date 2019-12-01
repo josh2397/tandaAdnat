@@ -1,24 +1,30 @@
-import React, { FunctionComponent, useState, InputHTMLAttributes } from 'react';
+import React, { FunctionComponent, useState, useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { userDetails } from '../../models/users';
 import MaterialTable from 'material-table';
 import { organisationListDTO } from '../../models/organisations';
-import User from '../users/user';
-import { Typography, Paper, Box, Container, Button, TextField, FormControl } from '@material-ui/core';
+import { Typography, Container, Button, TextField, FormControl } from '@material-ui/core';
 import Cookies from '../../helpers/Cookies';
-import { async } from 'q';
 import Axios, { AxiosResponse } from 'axios';
-import { identifier } from '@babel/types';
 import produce from 'immer';
+import AuthContext, { defaultUserDetails } from '../../components/authContext';
+import { useEffect } from 'react';
 
 const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({location, history}) => {
 
-    const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
-    const [organisationList, setOrganisationList] = useState([{id: 1, name: "new org", hourlyRate: 24.36}] as organisationListDTO[]);
+    const authAPI = useContext(AuthContext);
+    const updateUserDetails = authAPI.updateUserDetails ? authAPI.updateUserDetails : () => { console.log("updateUserDetails is undefined")};
+    const [organisationList, setOrganisationList] = useState([] as organisationListDTO[]);
+    const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
+
+    const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));    
     const [newOrgDetails, setNewOrgDetails] = useState({
-        name: "", 
+        name: "",
         hourlyRate: ""
     });
+
+    useEffect(() => {
+        getOrganisationList();
+    }, [])
 
     const getOrganisationList = async () => {
         try {
@@ -38,6 +44,13 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
         }
     }
 
+    const updateUserDetailsFromResponse = (response: AxiosResponse<any>) => {
+        const {organisationName, organisationId, ...details} = userDetails;
+        const updatedUserDetails = {organisationName: response.data.name, organisationId: response.data.id, ...details};
+        
+        updateUserDetails(updatedUserDetails);
+    }
+
     const joinOrganisation = async (id: number) => {
         console.log("joining org");
         try {
@@ -45,16 +58,17 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
             const response: AxiosResponse<any> = await Axios.post(
                 'http://localhost:3000/organisations/join',
                 {
-                    "organisationId": +id
+                    "organisationId": id
                 },
                 {headers: {
                     "Authorization": sessionId,
                     "Content-Type": "application/json"
             }});
-            console.log(response);
 
             if (response.status === 200) {
-                console.log(response.data);
+
+                updateUserDetailsFromResponse(response);
+
                 history.push({
                     pathname: "organisation/actions",
                     state: {
@@ -83,7 +97,8 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
             }});
             
             if (response.status === 200) {
-                console.log(response);
+
+                updateUserDetailsFromResponse(response);
                 getOrganisationList();
             }
         } catch (ex) {

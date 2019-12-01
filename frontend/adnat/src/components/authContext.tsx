@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React from 'react';
 import { IUserDetails } from '../models/users';
 
 interface ContextProps {

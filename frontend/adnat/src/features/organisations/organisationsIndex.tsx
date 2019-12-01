@@ -3,7 +3,7 @@ import PageLayout from '../../layout/pageLayout';
 import { Button, Typography, Link } from '@material-ui/core';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
-import { userDetails, IUserDetails } from '../../models/users';
+import { userDetails } from '../../models/users';
 import AuthContext, {defaultUserDetails} from '../../components/authContext';
 import User from '../users/user';
 import { RouteComponentProps, Route, Switch, Redirect } from 'react-router';
@@ -69,7 +69,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         * join one, otherwise allow them to select actions for that organisation
         */
        console.log(location.state, sessionId);
-        if ((userDetails.organisationId === undefined) && (userDetails.organisationId === -1)) {
+        if ((userDetails.organisationId === undefined) || (userDetails.organisationId === -1) || (userDetails.organisationId === null)) {
             pushRoute({sessionId: sessionId}, 'createjoin')
         } else {
             pushRoute({
@@ -145,7 +145,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
             }
             <Switch>
                 <Route exact={true} component={OrganisationCreateJoin} path='/organisation/createjoin'/>
-                <Route exact={true} component={OrganisationsActions} path='/organisation/actions'/>
+                <Route component={OrganisationsActions} path='/organisation/actions'/>
                 <Route exact={true} component={OrganisationsEdit} path='/organisation/edit'/>
                 <Route exact={true} component={OrganisationsShifts} path='/organisation/shifts'/>
                 <Route render={() => <Redirect to={{pathname: "/organisation"}} />} />

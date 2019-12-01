@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useContext } from 'react';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, Container, Card, CardContent, CardActions, Divider } from '@material-ui/core';
 import { RouteComponentProps, Switch, Route } from 'react-router';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
@@ -36,7 +36,12 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
     }
 
     const handleViewShiftsClick = () => {
-        history.push('/organisation/actions/shifts');
+        history.push({
+            pathname: '/organisation/actions/shifts',
+            state: {
+                sessionId: sessionId
+            }
+        });
     }
     
     
@@ -54,19 +59,27 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
 
     return (
         <>
-        <Typography style={{marginTop: 80}} variant='h5'>
-            {userDetails.organisationName}
-        </Typography>
+            <Card style={{margin: "80px auto 0 auto", width: "80%"}}>
+                <CardContent>
+                    <Typography variant='h5'>
+                        {userDetails.organisationName}
+                    </Typography>
+                </CardContent>
+                
+                <CardContent>
+                    <Button color="secondary" onClick={handleViewShiftsClick}>View Shifts</Button>
+                    <Button color="secondary" >Edit</Button>
+                    <Button color="secondary" onClick={handleGetOrganisation}>Refresh</Button>
+                </CardContent>
 
+                <CardActions>
+                    <Switch>
+                        <Route exact={true} component={OrganisationsShifts} path='/organisation/actions/shifts'/>
+                    </Switch>
+                </CardActions>
+            </Card>
 
-        <Button color="primary" onClick={handleViewShiftsClick}>View Shifts</Button>
-        <Button>Edit</Button>
-        <Button onClick={handleGetOrganisation}>Get Organisation</Button>
-
-        <Switch>
-
-            <Route component={OrganisationsShifts} path='/organisation/actions/shifts'/>
-        </Switch>
+            
         </>
     );
 };

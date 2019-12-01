@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import PageLayout from '../../layout/pageLayout';
-import { Button } from '@material-ui/core';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
 import { userDetails } from '../../models/users';

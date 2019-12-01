@@ -1,4 +1,4 @@
-import React, { useState, createContext, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './features/auth/login';
 import Signup from './features/auth/signup';
 import OrganisationsIndex from './features/organisations/organisationsIndex';
@@ -8,8 +8,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
-  RouteComponentProps
+  Redirect
 } from "react-router-dom";
 import { AuthProvider } from './components/authContext';
 import { IUserDetails } from './models/users';
