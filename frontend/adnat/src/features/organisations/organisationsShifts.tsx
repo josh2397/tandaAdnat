@@ -153,8 +153,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
         const finishMinutes: number = (shiftTimes[1].getMinutes());
         const startHours: number = shiftTimes[0].getHours();
         const startMinutes: number = (shiftTimes[0].getMinutes());
-        const finishDay: number = shiftTimes[1].getDate();
-        const startDay: number = shiftTimes[0].getDate();
 
         let hoursDiff: number;
         if (finishHours < startHours){
@@ -162,7 +160,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
         } else {
             hoursDiff = finishHours - startHours;
         }
-
 
         let minutesDiff = breakLength ? finishMinutes - startMinutes - breakLength : finishMinutes - startMinutes;
         if (minutesDiff < 0) {
@@ -186,7 +183,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
 
             const shiftTimeStrings: string[] = timesToStrings([start, finish]);
 
-            
             const dateDraft = new Date(shift.start);
             const dateString = `${dateDraft.getDate()}/${dateDraft.getMonth()}/${dateDraft.getFullYear()}`
             
