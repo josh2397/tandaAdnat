@@ -48,8 +48,9 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
     }, [orgHourlyRate])
 
     useEffect(() => {
-        if (shifts.length <= 25) {
+        if (shifts.length <= 10) {
             setNoRows(shifts.length);
+            setPageSizeOptions([]);
         } else {
             setPageSizeOptions([10, 25, 50])
         }

@@ -1,19 +1,5 @@
 {
-  "name": "adnat-react",
-  "version": "1.0.0",
-  "license": "MIT",
-  "scripts": {
-    "backend:start": "cd backend && node index.js",
-    "backend:setup": "cd backend && yarn install"
-  },
   "dependencies": {
-    "@material-ui/pickers": "^3.2.8",
-    "bcryptjs": "^2.4.3",
-    "express": "^4.17.1",
-    "material-table": "^1.54.1",
-    "sqlite3": "^4.1.0",
-    "uuid": "^3.3.3",
-    "uuid4": "^1.1.4",
-    "validate.js": "^0.13.1"
+    "@material-ui/pickers": "^3.2.8"
   }
 }
