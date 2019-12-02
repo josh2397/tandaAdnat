@@ -26,6 +26,8 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
 
     const [users, setUsers] = useState([] as userDetails[]);
 
+    const [userIdMap, setUserIdMap] = useState(new Map<number, string>());
+
     const [orgHourlyRate, setOrgHourlyRate] = useState<number>(-1);
 
     
@@ -62,6 +64,7 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
     }, [shifts])
 
     useEffect(() => {
+        mapUserIdsToName();
         getShifts();
     }, [users])
 
@@ -120,8 +123,12 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
         }
     }
 
-    const userComparison = () => {
-
+    const mapUserIdsToName = () => {
+        const updatedUserIdMap = userIdMap;
+        for (let i = 0; i < users.length; i++) {
+            updatedUserIdMap.set(users[i].id, users[i].name);
+        }
+        setUserIdMap(updatedUserIdMap);
     }
 
     const sortShifts = (shifts: organisationShift[]) => {
@@ -141,14 +148,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
         }
     };
 
-    const compareShiftValues = (a: number, b: number) => {
-        if (a < b) {
-             return -1;
-        } else if (a > b) {
-            return 1;
-        }
-    }
-
     const timesToStrings = (shiftTimes: Date[]) => {
         console.log("Incoming Shift Times:", shiftTimes);
         let shiftTimeStrings : string[] = [];
@@ -166,10 +165,18 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
         return shiftTimeStrings;
     }
 
-    const calculateHoursWorked = (shiftTimes: Date[]) => {
-        const finish: number = shiftTimes[1].getHours() + (shiftTimes[1].getMinutes() * 0.01);
-        const start: number = shiftTimes[0].getHours() + (shiftTimes[0].getMinutes() * 0.01);
-        const timeDiff = finish - start;
+    const calculateHoursWorked = (shiftTimes: Date[], breakLength: number | undefined) => {
+        const finishHours: number = shiftTimes[1].getHours();
+        const finishMinutes: number = (shiftTimes[1].getMinutes());
+        const startHours: number = shiftTimes[0].getHours();
+        const startMinutes: number = (shiftTimes[0].getMinutes());
+        let hoursDiff = finishHours - startHours;
+        let minutesDiff = breakLength ? finishMinutes - startMinutes - breakLength : finishMinutes - startMinutes;
+        if (minutesDiff < 0) {
+            hoursDiff--;
+            minutesDiff = 60 - minutesDiff;
+        }
+        const timeDiff = hoursDiff + (minutesDiff * 0.01);
 
         const minuesToHours = ((timeDiff - Math.floor(timeDiff)) * 100 / 60);
 
@@ -190,14 +197,14 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
             const dateDraft = new Date(shift.start);
             const dateString = `${dateDraft.getDate()}/${dateDraft.getMonth()}/${dateDraft.getFullYear()}`
             
-            const hoursWorked = calculateHoursWorked([start, finish]);
+            const hoursWorked = calculateHoursWorked([start, finish], shift.breakLength);
 
             const cost = orgHourlyRate * hoursWorked;
 
             const modifiedShift: organisationShift = {
                 id: shift.id,
                 userId: shift.userId,
-                // name: getUserName(shift.userId),
+                name: userIdMap.get(shift.userId),
                 date: dateString,
                 start: shiftTimeStrings[0],
                 finish: shiftTimeStrings[1],
@@ -258,8 +265,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
                     }
                 }}
             />
-            <Button onClick={getUsers}>Get Users</Button>
-            <Button onClick={getShifts}>Get Shifts</Button>
         </div>
     );
 };

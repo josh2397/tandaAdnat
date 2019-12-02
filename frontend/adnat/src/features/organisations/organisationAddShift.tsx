@@ -13,11 +13,13 @@ import {
 
 export default function OrganisationAddShift(props: any) {
 
+    const currentDate = new Date();
+
     const [newShift, setNewShift] = useState<organisationCreateShiftDTO>({
         userId: props.userId,
         date: new Date(),
         start: new Date(),
-        finish: new Date()
+        finish: new Date(Date.now() + 1000 * 60 * 60 * 8)
     })
 
     const tableInputFields = [
