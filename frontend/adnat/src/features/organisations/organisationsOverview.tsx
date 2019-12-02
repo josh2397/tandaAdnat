@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import MaterialTable from 'material-table';
-import { organisationListDTO } from '../../models/organisations';
+import { organisationListDTO, createOrganisationDTO } from '../../models/organisations';
 import { Typography, Container, Button, TextField, FormControl } from '@material-ui/core';
 import Cookies from '../../helpers/Cookies';
 import Axios, { AxiosResponse } from 'axios';
@@ -17,9 +17,9 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
     const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
 
     const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));    
-    const [newOrgDetails, setNewOrgDetails] = useState({
+    const [newOrgDetails, setNewOrgDetails] = useState<createOrganisationDTO>({
         name: "",
-        hourlyRate: ""
+        rate: ""
     });
 
     useEffect(() => {
@@ -89,7 +89,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                 'http://localhost:3000/organisations/create_join',
                 {
                     "name": newOrgDetails.name,
-                    "hourlyRate": +newOrgDetails.hourlyRate
+                    "hourlyRate": +newOrgDetails.rate
                 },
                 {headers: {
                     "Authorization": sessionId,
@@ -113,7 +113,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                     draftNewOrgDetails.name = value;
                     break;
                 case "hourlyRate":
-                    draftNewOrgDetails.hourlyRate = value;
+                    draftNewOrgDetails.rate = value;
                     break;
             }
         });
@@ -167,7 +167,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                     label="Hourly Rate"
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         updateNewOrgDetails("hourlyRate", event.target.value)}
-                    value={newOrgDetails.hourlyRate}
+                    value={newOrgDetails.rate}
                 />
 
                 <Button onClick={createAndJoinOrganisation} >Create and Join</Button>

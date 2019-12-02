@@ -1,12 +1,12 @@
 export interface createOrganisationDTO {
     name: string;
-    rate: number;
+    rate: string;
 }
 
 export interface editOrganisationDTO {
     id: string;
     name: string;
-    hourlyRate: number;
+    hourlyRate: string;
 }
 
 export interface organisationListDTO {

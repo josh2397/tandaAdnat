@@ -6,7 +6,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import produce from 'immer';
 import { userLoginDTO } from '../../models/users';
 import axios, { AxiosResponse } from 'axios';
-import Validation from './validation';
+import Validation from '../../global/validation';
 import { RouteComponentProps } from 'react-router-dom';
 import Cookies from '../../helpers/Cookies';
 

@@ -6,6 +6,7 @@ import Cookies from '../../helpers/Cookies';
 import { useEffect } from 'react';
 import AuthContext, { defaultUserDetails } from '../../components/authContext';
 import OrganisationsShifts from './organisationsShifts';
+import OrganisationsEdit from './organisationsEdit';
 
 const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location, history}) => {
 
@@ -44,6 +45,14 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
         });
     }
     
+    const handleEditClick = () => {
+        history.push({
+            pathname: '/organisation/actions/edit',
+            state: {
+                sessionId: sessionId
+            }
+        })
+    }
     
 
     useEffect(() => {
@@ -67,13 +76,14 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
                 
                 <CardContent>
                     <Button color="secondary" onClick={handleViewShiftsClick}>View Shifts</Button>
-                    <Button color="secondary" >Edit</Button>
+                    <Button color="secondary" onClick={handleEditClick}>Edit</Button>
                     <Button color="secondary" onClick={handleGetOrganisation}>Refresh</Button>
                 </CardContent>
 
                 <CardActions>
                     <Switch>
                         <Route exact={true} component={OrganisationsShifts} path='/organisation/actions/shifts'/>
+                        <Route exact={true} component={OrganisationsEdit} path='/organisation/actions/edit'/>
                     </Switch>
                 </CardActions>
             </Card>

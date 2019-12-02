@@ -2,7 +2,7 @@ import React, { useState, SyntheticEvent } from 'react';
 import PageLayout from '../../layout/pageLayout'
 import { FormControl, Button, TextField, Link, Snackbar, SnackbarContent, makeStyles, Theme } from '@material-ui/core';
 import { userSignupDTO } from '../../models/users';
-import Validation from './validation';
+import Validation from '../../global/validation';
 import axios, { AxiosResponse } from 'axios';
 import produce from 'immer';
 import { green } from '@material-ui/core/colors';

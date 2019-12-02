@@ -5,6 +5,7 @@ interface inputValidationTypes {
     email?: string;
     password?: string;
     confirmPassword?: string;
+    number?: string;
 }
 
 export default function Validation (values: inputValidationTypes, rules: string[]) {
@@ -13,7 +14,7 @@ export default function Validation (values: inputValidationTypes, rules: string[
             presence: true,
             type: "string",
             length: {
-                minimum: 4
+                minimum: 1
             }
         }
     }
@@ -40,6 +41,13 @@ export default function Validation (values: inputValidationTypes, rules: string[
         confirmPassword: {
             presence: true,
             equality: "password"
+        }
+    }
+
+    const numberContraints = {
+        number : {
+            presence: true,
+            numericality: true
         }
     }
 
@@ -74,7 +82,13 @@ export default function Validation (values: inputValidationTypes, rules: string[
             case "confirmPassword":
                 result = validate({password: values["password"], confirmPassword: values["confirmPassword"]}, confirmPasswordContraints);
                 return resultWithEmpty(result, {confirmPassword: ""});
+
+            case "number":
+                result = validate({number: values["number"]}, numberContraints);
+                return resultWithEmpty(result, {number: ""});
+                
         }
+           
     }).reduce((error, current) => {
         
         Object.entries(current).forEach(([k, v]) => {
