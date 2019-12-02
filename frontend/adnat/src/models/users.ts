@@ -23,3 +23,9 @@ export interface IUserDetails {
     organisationId: number;
     organisationName: string;
 }
+
+export interface userChangePasswordDTO {
+    oldPassword: string;
+    newPassword: string;
+    newPasswordConfirmation: string;
+}

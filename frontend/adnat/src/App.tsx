@@ -15,6 +15,7 @@ import { IUserDetails } from './models/users';
 import PrivateRoute from './helpers/privateRoute';
 import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
+import ChangePassword from './features/auth/changePassword';
 
 const theme = createMuiTheme({
   palette: {
@@ -49,8 +50,8 @@ const App: React.FC = () => {
           <Switch>
             <Route exact={true} component={Login} path="/login"/>
             <Route exact={true} component={Signup} path="/signup"/>
+            <Route exact={true} component={ChangePassword} path="/changepassword"/>
             <PrivateRoute authenticated={authenticated} component={OrganisationsIndex} path="/organisation"/>
-
             <Route render={() => <Redirect to={{pathname: "/login"}} />} />
           </Switch>
 

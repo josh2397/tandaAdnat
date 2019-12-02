@@ -160,7 +160,7 @@ export default function Login (props: RouteComponentProps) {
                 <Button style={{margin: "40px auto 0px auto", width: "25%"}} variant="contained" onClick={handleLoginClick}>Log In</Button>
 
                 <Link style={{marginTop: 20}} href='/signup' variant='subtitle2'>Sign up</Link>
-                <Link href='/password' variant='body2'>Forgot Password?</Link>
+                <Link href='/changepassword' variant='body2'>Change Password?</Link>
 
             </FormControl>
         </PageLayout>
