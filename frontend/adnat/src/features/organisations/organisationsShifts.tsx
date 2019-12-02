@@ -153,7 +153,17 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
         const finishMinutes: number = (shiftTimes[1].getMinutes());
         const startHours: number = shiftTimes[0].getHours();
         const startMinutes: number = (shiftTimes[0].getMinutes());
-        let hoursDiff = finishHours - startHours;
+        const finishDay: number = shiftTimes[1].getDate();
+        const startDay: number = shiftTimes[0].getDate();
+
+        let hoursDiff: number;
+        if (finishHours < startHours){
+            hoursDiff = 24 - startHours + finishHours
+        } else {
+            hoursDiff = finishHours - startHours;
+        }
+
+
         let minutesDiff = breakLength ? finishMinutes - startMinutes - breakLength : finishMinutes - startMinutes;
         if (minutesDiff < 0) {
             hoursDiff--;
