@@ -43,10 +43,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                 "Content-Type": "application/json"
             }});
 
-            console.log(response);
-
             if (response.status === 200) {
-                console.log(response.data);
                 setOrganisationList(response.data);
             }
         } catch (ex) {
@@ -62,9 +59,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
     }
 
     const joinOrganisation = async (id: number) => {
-        console.log("joining org");
         try {
-            console.log("joining org - in try");
             const response: AxiosResponse<any> = await Axios.post(
                 'http://localhost:3000/organisations/join',
                 {

@@ -2,21 +2,16 @@ import React, { FunctionComponent, useState, useContext } from 'react';
 import { RouteComponentProps } from 'react-router';
 import Cookies from '../../helpers/Cookies';
 import AuthContext, { defaultUserDetails } from '../../components/authContext';
-import { Typography, Container, Button, Table, TableRow, TableCell, TableBody, TextField, Grid, Divider } from '@material-ui/core';
-import MaterialTable, { MTablePagination, MTableBody } from 'material-table';
+import MaterialTable from 'material-table';
 import Axios, { AxiosResponse } from 'axios';
-import { organisationShift, organisationCreateShiftDTO, organisationGetShifts } from '../../models/organisations';
+import { organisationShift, organisationGetShifts } from '../../models/organisations';
 import { useEffect } from 'react';
-import produce from 'immer';
 import { userDetails } from '../../models/users';
 import OrganisationAddShift from './organisationAddShift';
-import { Props } from 'react';
-import { ADDRGETNETWORKPARAMS } from 'dns';
 
-const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, history}) => {
+const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location}) => {
 
     const authAPI = useContext(AuthContext);
-    const updateUserDetails = authAPI.updateUserDetails ? authAPI.updateUserDetails : () => { console.log("updateUserDetails is undefined")};
     const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
     
     const [sessionId, setSessionId] = useState(location.state ? 
@@ -29,9 +24,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
     const [userIdMap, setUserIdMap] = useState(new Map<number, string>());
 
     const [orgHourlyRate, setOrgHourlyRate] = useState<number>(-1);
-
-    
-    console.log("rendering");
     
     const tableInputFields = [
         "date",
@@ -76,7 +68,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
                 "Content-Type": "application/json"
             }});
 
-            console.log("Get Shifts", response);
             const shifts = parseShifts(sortShifts(response.data));
             setShifts(shifts);
         } catch (ex) {
@@ -85,7 +76,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
     };
 
     const getOrganisationPayRate = async () => {
-        console.log("SessionId in get org:", sessionId);
         try {
             const response: AxiosResponse<any> = await Axios.get(
                 `http://localhost:3000/organisations/${userDetails.organisationId}`,
@@ -94,9 +84,7 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
                     "Content-Type": "application/json"
             }});
 
-            console.log(response);
             if (response.status === 200) {
-                console.log(response.data.hourlyRate);
                 setOrgHourlyRate(response.data.hourlyRate);
             }
         } catch (ex) {
@@ -106,7 +94,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
 
     const getUsers = async () => {
 
-        console.log("Getting users");
         try {
             const response: AxiosResponse<any> = await Axios.get("http://localhost:3000/users",
             {headers : {
@@ -114,7 +101,6 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
                 "Content-Type": "application/json"
             }});
             if (response.status === 200 ) {
-                console.log(response.data);
                 setUsers(response.data);
             }
 
@@ -149,19 +135,16 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location, 
     };
 
     const timesToStrings = (shiftTimes: Date[]) => {
-        console.log("Incoming Shift Times:", shiftTimes);
         let shiftTimeStrings : string[] = [];
         for (let i = 0; i < shiftTimes.length; i++) {
             let timeNumber: number = shiftTimes[i].getHours() + (shiftTimes[i].getMinutes()  * 0.01);
             if (timeNumber >= 13) {
                 timeNumber -= 12;
-                // timeNumber = (Math.round(timeNumber * 100) / 100).toFixed(2);
                 shiftTimeStrings.push((Math.round(timeNumber * 100) / 100).toFixed(2) + "pm");
             } else {
                 shiftTimeStrings.push((Math.round(timeNumber * 100) / 100).toFixed(2) + 'am');
             }
         }
-        console.log("Shift Time Strings: ", shiftTimeStrings);
         return shiftTimeStrings;
     }
 

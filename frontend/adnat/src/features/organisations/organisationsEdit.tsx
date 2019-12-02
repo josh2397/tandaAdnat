@@ -16,6 +16,7 @@ const OrganisationsEdit: FunctionComponent<RouteComponentProps> = ({location}) =
 
     const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));    
 
+    const [orgHourlyRate, setOrgHourlyRate] = useState<number>(-1);
 
     const [organisation, setOrganisation] = useState<editOrganisationDTO>({
         id: "",
@@ -35,7 +36,15 @@ const OrganisationsEdit: FunctionComponent<RouteComponentProps> = ({location}) =
 
     useEffect(() => {
         updateOrganisation("id", userDetails.organisationId.toString());
+        updateOrganisation("name", userDetails.organisationName);
+        getOrganisationPayRate();
     }, [])
+
+    useEffect(() => {
+        if (orgHourlyRate !== -1){
+            updateOrganisation("rate", orgHourlyRate.toString());
+        }
+    }, [orgHourlyRate])
 
     const updateOrganisation = (property: string, value: string) => {
         const updatedOrganiation: editOrganisationDTO = produce(organisation, draftOrganisation => {
@@ -82,7 +91,6 @@ const OrganisationsEdit: FunctionComponent<RouteComponentProps> = ({location}) =
 
     const validateEdit = () => {
         const validationResults = Validation({name: organisation.name, number: organisation.hourlyRate}, ["name", "number"]);
-        console.log(validationResults);
         const errors = validationResults.errors;
 
         const updatedHelperText = produce(helperText, draftHelperText => {
@@ -105,6 +113,23 @@ const OrganisationsEdit: FunctionComponent<RouteComponentProps> = ({location}) =
 
         return validationResults.errorOccured;
 
+    }
+
+    const getOrganisationPayRate = async () => {
+        try {
+            const response: AxiosResponse<any> = await Axios.get(
+                `http://localhost:3000/organisations/${userDetails.organisationId}`,
+                {headers: {
+                    "Authorization": sessionId,
+                    "Content-Type": "application/json"
+            }});
+
+            if (response.status === 200) {
+                setOrgHourlyRate(response.data.hourlyRate);
+            }
+        } catch (ex) {
+            console.log(ex);
+        }
     }
 
     return (

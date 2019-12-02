@@ -16,7 +16,6 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
     const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));    
 
     const handleGetOrganisation = async () => {
-        console.log("SessionId in get org:", sessionId);
         try {
             const response: AxiosResponse<any> = await Axios.get(
                 `http://localhost:3000/organisations/${userDetails.organisationId}`,
@@ -25,7 +24,6 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
                     "Content-Type": "application/json"
             }});
 
-            console.log(response);
             if (response.status === 200) {
                 const {organisationName, ...details} = userDetails;
                 const updatedUserDetails = { organisationName: response.data.name, ...details};
@@ -67,7 +65,6 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
             }});
 
             if (response.status === 200) {
-                console.log("Successfully Left Organisation:", userDetails.organisationName);
                 history.push({
                     pathname: "/organisation/createjoin",
                     state: {
@@ -82,14 +79,8 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
     
 
     useEffect(() => {
-        console.log("organisationId from actions:", userDetails.organisationId, location.state);
-
         handleGetOrganisation();
     }, [])
-
-    useEffect(() => {
-        console.log("userOrgDetails updated: ", userDetails);
-    },[userDetails])
 
     return (
         <>

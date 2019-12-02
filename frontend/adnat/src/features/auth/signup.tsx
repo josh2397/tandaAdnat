@@ -53,11 +53,9 @@ export default function Signup (props: RouteComponentProps) {
 
         if (!validateSignup()) {
             try {
-                console.log(userSignup);
                 const response: AxiosResponse<any> = await axios.post('http://localhost:3000/auth/signup', userSignup)
                 
                 if (response.status === 200) {
-                    console.log(response.data);
                     setOpenSuccessSnackbar(true);
                     setTimeout(function() {
                         props.history.push('/login');
@@ -82,7 +80,7 @@ export default function Signup (props: RouteComponentProps) {
             draftHelperText.passwordConfirmation = errors["confirmPassword"];
         });
 
-        const updatedInputerErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
+        const updatedInputErrorFlags = produce(inputErrorFlags, draftInputErrorFlags => {
             if (errors.name !== "") {
                 draftInputErrorFlags.name = true;
             } else draftInputErrorFlags.name = false;
@@ -100,11 +98,8 @@ export default function Signup (props: RouteComponentProps) {
             } else draftInputErrorFlags.confirmPassword = false;
         });
 
-        console.log(updatedInputerErrorFlags);
-        console.log(errors, updatedHelperText);
-
         setHelperText(updatedHelperText);
-        setInputErrorFlags(updatedInputerErrorFlags);
+        setInputErrorFlags(updatedInputErrorFlags);
 
         return validationResults.errorOccured;
     }

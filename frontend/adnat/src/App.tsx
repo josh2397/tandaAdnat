@@ -31,7 +31,9 @@ const App: React.FC = () => {
   
   const [authenticated, setAuthenticated] = useState(false);
   const [userDetails, setUserDetails] = useState({} as IUserDetails);
+  const [sessionId, setSessionId] = useState<string>("");
 
+  const updateSessionId = (sessionId: string) => setSessionId(sessionId);
   const updateAuthentication = (authenticationValue: boolean) => setAuthenticated(authenticationValue);
   const updateUserDetails = (updatedUserDetails: IUserDetails) => setUserDetails(updatedUserDetails);
 
@@ -39,7 +41,7 @@ const App: React.FC = () => {
     console.log("updated authenticated in app", authenticated);
   }, [authenticated])
 
-  const api = {updateAuthentication, authenticated, updateUserDetails, userDetails}
+  const api = {updateAuthentication, authenticated, updateUserDetails, userDetails, sessionId, updateSessionId}
 
   return (
     <AuthProvider value={api}>

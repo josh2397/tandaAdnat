@@ -20,7 +20,6 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () => {console.log("toggleAuthenticated is undefined")};
     const updateUserDetails = authAPI.updateUserDetails ? authAPI.updateUserDetails : () => { console.log("updateUserDetails is undefined")};
     const userDetails = authAPI.userDetails ? authAPI.userDetails : defaultUserDetails;
-    console.log("Printing Authenticated Through context: ", authAPI.authenticated);
 
     const [sessionId, setSessionId] = useState(location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"));
     
@@ -31,17 +30,7 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         email: ""
     });
 
-    useEffect(() => {
-        // console.log("Authentication updated");
-        // console.log(document.cookie);
-        // console.log(authAPI.authenticated);
-    }, [authAPI.authenticated])
-
-    // const sessionId = location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId");
-
-
     const handleGetUser = async () => {
-        console.log(sessionId, location.state);
 
         let updatedUser: userDetails | undefined;
         try {
@@ -68,7 +57,6 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
         /* If the user hasn't joined an organisation get them to create or 
         * join one, otherwise allow them to select actions for that organisation
         */
-       console.log(location.state, sessionId);
         if ((userDetails.organisationId === undefined) || (userDetails.organisationId === -1) || (userDetails.organisationId === null)) {
             pushRoute({sessionId: sessionId}, 'createjoin')
         } else {
@@ -95,18 +83,13 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
     }, []);
 
     useEffect(() => {
-        console.log("userDetails have updated", userDetails);
-        console.log(location.state, sessionId);
         if ((userDetails.organisationId !== undefined) && (userDetails.organisationId !== -1)) {
-            console.log("Organisation Id from index:", userDetails.organisationId);
-            
             routeToOrganisation();
         }
         
     }, [authAPI.userDetails])
 
     const handleLogout = async () => {
-        console.log(Cookies.getCookieValue("sessionId"));
         try {
             const response: AxiosResponse<any> = await Axios.delete('http://localhost:3000/auth/logout', {headers: {
                 "Authorization": location.state ? location.state.sessionId : Cookies.getCookieValue("sessionId"),
@@ -124,7 +107,6 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
                     email: ""
                 })
                 updateAuthentication(false);
-                console.log("Logged out, cookie: ", document.cookie);
     
             }
         } catch (ex) {
@@ -135,11 +117,13 @@ const OrganistionsIndex: FunctionComponent<RouteComponentProps> = ({children, lo
 
     return (
         <PageLayout title="Organisations">
-            <Button onClick={handleGetUser}>Get User</Button>
             {user ? 
                 <>
-                    <Typography>You're logged in as {user.name}</Typography>
-                    <Link href="/login" onClick={handleLogout}>Logout</Link>
+                    <Typography style={{marginTop: 20}}>
+                        You're logged in as {user.name}
+                    </Typography>
+                    <Link href="/login" onClick={handleLogout}>Logout</Link><br/>
+                    <Link href='/changepassword' variant='body2'>Change Password?</Link>
                 </> :
                 <></>
             }
