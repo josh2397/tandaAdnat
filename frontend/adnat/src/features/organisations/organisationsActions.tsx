@@ -53,6 +53,32 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
             }
         })
     }
+
+    const handleLeaveClick = async () => {
+        try {
+            const response: AxiosResponse<any> = await Axios.post(
+                'http://localhost:3000/organisations/leave',
+                {
+                    userId: userDetails.id
+                },
+                {headers: {
+                    "Authorization": sessionId,
+                    "Content-Type": "application/json"
+            }});
+
+            if (response.status === 200) {
+                console.log("Successfully Left Organisation:", userDetails.organisationName);
+                history.push({
+                    pathname: "/organisation/createjoin",
+                    state: {
+                        sessionId: sessionId
+                    }
+                })
+            }
+        } catch (ex) {
+            console.log(ex);
+        }
+    }
     
 
     useEffect(() => {
@@ -77,7 +103,7 @@ const OrganisationsActions: FunctionComponent<RouteComponentProps> = ({location,
                 <CardContent>
                     <Button color="secondary" onClick={handleViewShiftsClick}>View Shifts</Button>
                     <Button color="secondary" onClick={handleEditClick}>Edit</Button>
-                    <Button color="secondary" onClick={handleGetOrganisation}>Refresh</Button>
+                    <Button color="secondary" onClick={handleLeaveClick}>Leave</Button>
                 </CardContent>
 
                 <CardActions>

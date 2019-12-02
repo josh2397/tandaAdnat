@@ -2,7 +2,17 @@ import React, { FunctionComponent, useState, useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import MaterialTable from 'material-table';
 import { organisationListDTO, createOrganisationDTO } from '../../models/organisations';
-import { Typography, Container, Button, TextField, FormControl } from '@material-ui/core';
+import { 
+    Typography, 
+    Container, 
+    Button, 
+    TextField, 
+    FormControl, 
+    Divider, 
+    Card, 
+    CardContent, 
+    CardActions 
+} from '@material-ui/core';
 import Cookies from '../../helpers/Cookies';
 import Axios, { AxiosResponse } from 'axios';
 import produce from 'immer';
@@ -121,13 +131,11 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
     }
 
     return (
-        <Container maxWidth="sm" style={{marginTop: "40px", borderStyle: "solid", borderRadius: "10px", borderColor: "#969696"}}>
-            <Typography variant='body2'>
+        <Container maxWidth="sm" style={{marginTop: "40px", marginBottom: "40px", borderStyle: "solid", borderRadius: "10px", borderColor: "grey"}}>
+            <Typography style={{margin: "40px 0 40px 0"}}variant='body2'>
                 You aren't a member of any organisations.<br/>
                 Join an existing one or create a new one.
             </Typography>
-
-            <Button onClick={getOrganisationList} >Get Organisations</Button>
 
             <MaterialTable
                 columns={[
@@ -139,7 +147,7 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                 options={{search: false}}
                 actions={[
                     {
-                        icon: 'save',
+                        icon: 'group_add',
                         tooltip: 'Join Organisation',
                         onClick: (event: any, rowData: any) => {
                             console.log(rowData.id);
@@ -148,31 +156,39 @@ const OrganisationCreateJoin: FunctionComponent<RouteComponentProps> = ({locatio
                     }
                 ]}
             />
+            <Divider style={{margin: "40px 0 40px 0"}}/>
 
-            <Typography style={{marginTop: 80}}>
-                Create Organisation
-            </Typography>
+            
+            <Card style={{marginBottom: 40}}>
+                <CardContent>
+                    <Typography variant="h6">
+                        Create Organisation
+                    </Typography>
+                    <FormControl>
+                        <TextField
+                            style={{marginTop: 20}}
+                            label="Name"
+                            color="secondary"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => 
+                                updateNewOrgDetails("name", event.target.value)}
+                            value={newOrgDetails.name}
 
-            <FormControl>
-                <TextField
-                    style={{marginTop: 20}}
-                    label="Name"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => 
-                        updateNewOrgDetails("name", event.target.value)}
-                    value={newOrgDetails.name}
+                        />
+                        <TextField
+                            style={{marginTop: 20}}
+                            label="Hourly Rate"
+                            color="secondary"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                                updateNewOrgDetails("hourlyRate", event.target.value)}
+                            value={newOrgDetails.rate}
+                        />
+                    </FormControl>
 
-                />
-                <TextField
-                    style={{marginTop: 20}}
-                    label="Hourly Rate"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        updateNewOrgDetails("hourlyRate", event.target.value)}
-                    value={newOrgDetails.rate}
-                />
-
-                <Button onClick={createAndJoinOrganisation} >Create and Join</Button>
-            </FormControl>
-
+                </CardContent>
+                <CardActions >
+                    <Button color="secondary" onClick={createAndJoinOrganisation} >Create and Join</Button>
+                </CardActions>
+            </Card>
         </Container>
     );
 };
