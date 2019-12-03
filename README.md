@@ -1,7 +1,7 @@
 # TandaAdnat
 Tanda Adnat project for full stack software engineer position.
 
-## Installation
+## Installation and running the project
 1. Firstly install yarn if it isn't already.
 2. Then in both frontend/adnat and backend run "yarn install" to download all required dependencies. You may also need to install @material-ui/pickers, @date-io/date-fns, date-fns@next and material-table manually.
 3. Run the backend server first with "yarn start".
