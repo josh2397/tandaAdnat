@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 import PageLayout from '../../layout/pageLayout';
 import { RouteComponentProps } from 'react-router';
-import { Container, FormControl, TextField, Card, CardContent, Button, CardActions } from '@material-ui/core';
+import { FormControl, TextField, Card, CardContent, Button, CardActions } from '@material-ui/core';
 import { userChangePasswordDTO } from '../../models/users';
 import produce from 'immer';
 import Axios, { AxiosResponse } from 'axios';

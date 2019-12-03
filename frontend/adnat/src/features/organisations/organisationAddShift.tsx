@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MTableBody } from 'material-table';
 import { TableCell, TextField, Button } from '@material-ui/core';
 import produce from 'immer';
@@ -69,7 +69,6 @@ export default function OrganisationAddShift(props: any) {
 
     const handleAddShift = async () => {
         try {
-            console.log(newShift);
             const response: AxiosResponse<any> = await Axios.post(
                 "http://localhost:3000/shifts",
                 newShift,

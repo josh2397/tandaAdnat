@@ -1,18 +1,15 @@
-import React, { useContext, FunctionComponent, useState } from 'react';
+import React, { useContext } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Typography, Menu, MenuItem, IconButton, Link } from '@material-ui/core';
+import { Typography, Menu, MenuItem, IconButton } from '@material-ui/core';
 import AuthContext from './authContext';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { RouteComponentProps } from 'react-router';
-import Cookies from '../helpers/Cookies';
-import Axios, { AxiosResponse } from 'axios';
 
 export default function TitleBar() {
 
     const authAPI = useContext(AuthContext);
-    const updateAuthentication = authAPI.updateAuthentication ? authAPI.updateAuthentication : () => {console.log("toggleAuthenticated is undefined")};
     const authenticated = authAPI.authenticated ? authAPI.authenticated : undefined;
+
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 

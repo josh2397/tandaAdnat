@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useContext } from 'react';
-import { Typography, Button, Container, Card, CardContent, CardActions, Divider } from '@material-ui/core';
+import { Typography, Button, Card, CardContent, CardActions } from '@material-ui/core';
 import { RouteComponentProps, Switch, Route } from 'react-router';
 import Axios, { AxiosResponse } from 'axios';
 import Cookies from '../../helpers/Cookies';
