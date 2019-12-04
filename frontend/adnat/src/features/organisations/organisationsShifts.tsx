@@ -49,6 +49,7 @@ const OrganisationsShifts: FunctionComponent<RouteComponentProps> = ({location})
 
     useEffect(() => {
         if (shifts.length <= 10) {
+            console.log(shifts.length);
             setNoRows(shifts.length);
             setPageSizeOptions([]);
         } else {
