@@ -1,5 +1,5 @@
-# TandaAdnat
-Tanda Adnat project for full stack software engineer position.
+# Adnat
+A full stack application that allows you create an account for joining an organisation rostering system.
 
 ## Installation and running the project
 1. Firstly install yarn if it isn't already.
