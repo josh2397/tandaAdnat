@@ -1,5 +1,5 @@
 # Adnat
-A full stack application that allows you create an account for joining an organisation rostering system.
+A full stack application that allows you create an account to join an organisation where you're able to create and delete shifts within the rostering system etc.
 
 ## Installation and running the project
 1. Firstly install yarn if it isn't already.
